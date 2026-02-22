@@ -28,6 +28,15 @@ class Tetris {
 
         this.playerReset(); // Corrected function name
         this.update();
+        this.tracks = [
+        'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
+        'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3',
+        'https://cdn.pixabay.com/audio/2024/01/09/audio_e3e11a1439.mp3',
+        'https://cdn.pixabay.com/audio/2025/04/10/audio_9ce76240d5.mp3'
+        ];
+        this.currentTrack = 0;
+        this.audio = new Audio(this.tracks[this.currentTrack]);
+        this.audio.loop = true;
     }
 
     createPiece(type) {
@@ -196,11 +205,34 @@ class Tetris {
         this.draw();
         requestAnimationFrame(this.update.bind(this));
     }
+
+    toggleMute() {
+    this.audio.muted = !this.audio.muted;
+    document.getElementById('mute-btn').innerText = this.audio.muted ? '🔊 Unmute' : '🔇 Mute';
+    }
+
+    nextTrack() {
+    this.audio.pause();
+    this.currentTrack = (this.currentTrack + 1) % this.tracks.length;
+    this.audio.src = this.tracks[this.currentTrack];
+    if (!this.audio.muted) this.audio.play();
+    }
 }
 
 // Initialization
 const canvas = document.getElementById('tetris');
 const game = new Tetris(canvas);
+
+// Music Manager
+document.getElementById('mute-btn').addEventListener('click', () => {
+    // Browsers block auto-play; music starts on first user interaction
+    if (game.audio.paused) game.audio.play();
+    game.toggleMute();
+});
+
+document.getElementById('next-track-btn').addEventListener('click', () => {
+    game.nextTrack();
+});
 
 // Input Handling
 document.addEventListener('keydown', event => {

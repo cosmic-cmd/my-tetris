@@ -56,3 +56,25 @@ canvas {
     background-color: #000;
     image-rendering: pixelated; /* Keeps the blocks sharp */
 }
+
+.music-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.music-controls button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.music-controls button:hover {
+    background: #00eeff;
+    color: black;
+}
