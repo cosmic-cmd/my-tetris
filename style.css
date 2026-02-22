@@ -1,0 +1,58 @@
+body {
+    background: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 150px;
+}
+
+h1 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: #00eeff;
+}
+
+.label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+#score {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.controls-hint {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.6;
+    border-top: 1px solid #444;
+    padding-top: 20px;
+}
+
+canvas {
+    border: 4px solid #444;
+    background-color: #000;
+    image-rendering: pixelated; /* Keeps the blocks sharp */
+}
