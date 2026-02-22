@@ -9,20 +9,29 @@ body {
     margin: 0;
 }
 
+/* Container to keep everything strictly side-by-side */
 .game-container {
     display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* Keeps them aligned at the very top */
     gap: 20px;
     padding: 20px;
-    background: #2d2d2d;
+    background: #222;
     border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .stats {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-width: 150px;
+    width: 160px; /* Fixed width prevents sidebar from wobbling */
+}
+
+/* Move Scores onto one line */
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 h1 {
@@ -57,24 +66,20 @@ canvas {
     image-rendering: pixelated; /* Keeps the blocks sharp */
 }
 
-.music-controls {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Compact the music buttons into a grid or row */
+.music-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-top: 10px;
 }
 
-.music-controls button {
-    background: #444;
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+.music-grid button {
+    padding: 8px 2px;
+    font-size: 0.8rem;
 }
 
-.music-controls button:hover {
-    background: #00eeff;
-    color: black;
+/* Make the pause button full width below them */
+#pause-btn {
+    grid-column: span 2;
 }
