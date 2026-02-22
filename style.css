@@ -1,7 +1,7 @@
-/* 1. Global Setup */
+/* 1. True Black Night Theme */
 body {
-    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-    color: #f8fafc;
+    background: #050505;
+    color: #ffffff;
     font-family: 'Inter', sans-serif;
     display: flex;
     align-items: center;
@@ -10,106 +10,109 @@ body {
     margin: 0;
 }
 
-/* 2. Modern 3D Container */
 .game-container {
     display: flex;
-    gap: 30px;
-    padding: 30px;
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    gap: 25px;
+    padding: 25px;
+    background: #0f0f0f;
+    border-radius: 12px;
+    border: 1px solid #222;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
 .stats-sidebar {
     display: flex;
     flex-direction: column;
-    width: 180px;
-    gap: 15px;
+    width: 200px;
+    gap: 12px;
 }
 
 .game-title {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.1rem;
-    color: #38bdf8;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    color: #00eeff;
     margin: 0 0 10px 0;
-    text-shadow: 3px 3px #0369a1;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
 }
 
-/* 3. Cards & Labels */
+/* 2. Sleek Dark Cards */
 .card {
-    background: rgba(15, 23, 42, 0.5);
+    background: #151515;
     padding: 12px;
-    border-radius: 12px;
-    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    border: 1px solid #252525;
 }
 
 .label {
-    font-size: 0.65rem;
-    color: #94a3b8;
-    margin-bottom: 8px;
-    font-weight: 600;
+    font-size: 0.6rem;
+    color: #666;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+    font-weight: 700;
 }
 
 .value {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.9rem;
-    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #eee;
 }
 
-/* 4. Canvas Styling */
+/* 3. Canvas */
 #tetris {
-    background-color: #020617;
-    border: 4px solid #334155;
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    background-color: #000;
+    border: 2px solid #222;
+    border-radius: 4px;
+}
+
+.next-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
 }
 
 #next {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    width: 60px;
-    height: 60px;
+    background: #000;
 }
 
-/* 5. 3D Buttons */
+/* 4. Balanced Controls */
 .controls-panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     margin-top: auto;
 }
 
-.music-row {
+.button-row {
     display: flex;
     gap: 8px;
 }
 
 button {
-    background: #334155;
-    color: #f8fafc;
-    border: none;
-    border-bottom: 4px solid #1e293b;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
+    background: #1a1a1a;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 12px 0;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.1s;
-    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    font-family: 'Orbitron', sans-serif;
 }
 
-button:hover {
-    background: #475569;
-}
-
-button:active {
-    border-bottom-width: 0px;
-    transform: translateY(4px);
+/* Mute and Next buttons are exactly half width */
+#mute-btn, #next-track-btn {
+    flex: 1;
 }
 
 #pause-btn {
     width: 100%;
-    font-size: 0.8rem;
+}
+
+button:hover {
+    background: #252525;
+    border-color: #00eeff;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(0, 238, 255, 0.2);
 }

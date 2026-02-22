@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenShift Worker Tetris</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,15 +24,17 @@
 
             <div class="card next-card">
                 <div class="label">NEXT</div>
-                <canvas id="next" width="80" height="80"></canvas>
+                <div class="next-wrapper">
+                    <canvas id="next" width="80" height="80"></canvas>
+                </div>
             </div>
 
             <div class="controls-panel">
-                <div class="music-row">
-                    <button id="mute-btn" title="Toggle Mute">🔇</button>
-                    <button id="next-track-btn" title="Next Track">⏭️</button>
+                <div class="button-row">
+                    <button id="mute-btn">🔇 MUTE</button>
+                    <button id="next-track-btn">⏭️ NEXT</button>
                 </div>
-                <button id="pause-btn">PAUSE GAME</button>
+                <button id="pause-btn">RESUME GAME</button>
             </div>              
         </div>
         <canvas id="tetris" width="240" height="400"></canvas>
