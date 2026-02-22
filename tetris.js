@@ -101,14 +101,24 @@ class Tetris {
     }
 
     playerHardDrop() {
+    // 1. Move the piece down until it hits something
     while (!this.collide(this.arena, this.player)) {
         this.player.pos.y++;
     }
+    // 2. Back up one space (the last valid position)
     this.player.pos.y--;
+
+    // 3. LOCK the piece into the arena (the missing step!)
+    this.merge(this.arena, this.player);
+
+    // 4. Reset for the next piece and check for cleared lines
     this.playerReset();
+    this.arenaSweep(); // This clears the lines if you got a "Tetris"
     this.updateScore();
+    
+    // Reset the drop counter so the next piece doesn't jump immediately
     this.dropCounter = 0;
-    }   
+    }
 
     playerMove(dir) {
         this.player.pos.x += dir;
