@@ -12,16 +12,20 @@
             <h1>TETRIS</h1>
             <div class="label">Next</div>
             <canvas id="next" width="80" height="80" style="margin-bottom: 20px;"></canvas>
+            <div class="label">High Score</div>
+            <div id="highScore">0</div>
             <div class="label">Score</div>
             <div id="score">0</div>
             <div class="music-controls">
             <div class="label">Music</div>
             <button id="mute-btn">🔇 Mute</button>
             <button id="next-track-btn">⏭️ Next</button>
+            <button id="pause-btn">⏸️ Pause</button>
             </div>
             <div class="controls-hint">
-                <p>Arrows: Move & Drop</p>
+                <p>Arrows: Move</p>
                 <p>Q / W: Rotate</p>
+                <p>Space: Drop</p>
             </div>
         </div>
         <canvas id="tetris" width="240" height="400"></canvas>

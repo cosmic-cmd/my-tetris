@@ -37,6 +37,9 @@ class Tetris {
         this.currentTrack = 0;
         this.audio = new Audio(this.tracks[this.currentTrack]);
         this.audio.loop = true;
+        this.paused = false;
+        this.highScore = localStorage.getItem('tetrisHighScore') || 0;
+        this.updateScore(); // Refresh the display on load
     }
 
     createPiece(type) {
@@ -196,6 +199,7 @@ class Tetris {
     }
 
     update(time = 0) {
+        if (this.paused) return; // STOP the loop if paused
         const deltaTime = time - this.lastTime;
         this.lastTime = time;
         this.dropCounter += deltaTime;
@@ -217,6 +221,31 @@ class Tetris {
     this.audio.src = this.tracks[this.currentTrack];
     if (!this.audio.muted) this.audio.play();
     }
+
+    togglePause() {
+    this.paused = !this.paused;
+    const btn = document.getElementById('pause-btn');
+    btn.innerText = this.paused ? '▶️ Resume' : '⏸️ Pause';
+    
+    // Pause the music if the game is paused
+    if (this.paused) {
+        this.audio.pause();
+    } else {
+        if (!this.audio.muted) this.audio.play();
+        this.update(); // Restart the animation loop
+    }
+}
+
+updateScore() {
+    document.getElementById('score').innerText = this.player.score;
+    
+    // Check for new High Score
+    if (this.player.score > this.highScore) {
+        this.highScore = this.player.score;
+        localStorage.setItem('tetrisHighScore', this.highScore);
+    }
+    document.getElementById('highScore').innerText = this.highScore;
+}
 }
 
 // Initialization
@@ -232,6 +261,18 @@ document.getElementById('mute-btn').addEventListener('click', () => {
 
 document.getElementById('next-track-btn').addEventListener('click', () => {
     game.nextTrack();
+});
+
+// Game Pause
+document.getElementById('pause-btn').addEventListener('click', () => {
+    game.togglePause();
+});
+
+// Also, let's allow "P" on the keyboard to pause
+document.addEventListener('keydown', event => {
+    if (event.keyCode === 80) { // 'P' Key
+        game.togglePause();
+    }
 });
 
 // Input Handling
