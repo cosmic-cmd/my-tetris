@@ -1,7 +1,8 @@
+/* 1. Global Setup */
 body {
-    background: #1a1a1a;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    color: #f8fafc;
+    font-family: 'Inter', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,104 +10,106 @@ body {
     margin: 0;
 }
 
-/* Container to keep everything strictly side-by-side */
+/* 2. Modern 3D Container */
 .game-container {
     display: flex;
-    flex-direction: row;
-    align-items: flex-start; /* Keeps them aligned at the very top */
-    gap: 20px;
-    padding: 20px;
-    background: #222;
-    border-radius: 8px;
+    gap: 30px;
+    padding: 30px;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
-/* 3. Layout Cleanup */
-.stats {
+.stats-sidebar {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center everything in the sidebar */
-    gap: 10px;
+    width: 180px;
+    gap: 15px;
 }
 
-/* Move Scores onto one line */
-.score-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    text-align: center;
+.game-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.1rem;
+    color: #38bdf8;
+    margin: 0 0 10px 0;
+    text-shadow: 3px 3px #0369a1;
 }
 
-h1 {
-    margin: 0 0 20px 0;
-    font-size: 24px;
-    letter-spacing: 4px;
-    color: #00eeff;
+/* 3. Cards & Labels */
+.card {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 12px;
+    border-radius: 12px;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
 }
 
 .label {
-    font-size: 12px;
-    text-transform: uppercase;
-    color: #888;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
-#score {
-    font-size: 32px;
-    margin-bottom: 30px;
+.value {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    color: #ffffff;
 }
 
-.controls-hint {
-    font-size: 13px;
-    color: #aaa;
-    line-height: 1.6;
-    border-top: 1px solid #444;
-    padding-top: 20px;
+/* 4. Canvas Styling */
+#tetris {
+    background-color: #020617;
+    border: 4px solid #334155;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
 }
 
-canvas {
-    border: 4px solid #444;
-    background-color: #000;
-    image-rendering: pixelated; /* Keeps the blocks sharp */
-}
-
-/* Compact the music buttons into a grid or row */
-.music-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.music-grid button {
-    padding: 8px 2px;
-    font-size: 0.8rem;
-}
-
-/* Make the pause button full width below them */
-#pause-btn {
-    grid-column: span 2;
-}
-
-/* 1. Shrink the Next preview */
 #next {
-    width: 80px;
-    height: 80px;
-    background-color: #000;
-    border: 2px solid #333;
-    margin-top: 5px;
-}
-
-/* 2. Professional Dark Buttons */
-.controls-row button, .music-grid button {
-    background-color: #333; /* Darker background */
-    color: #eee;           /* Light text */
-    border: 1px solid #444;
-    padding: 8px;
-    cursor: pointer;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
-    transition: background 0.2s;
+    width: 60px;
+    height: 60px;
 }
 
-.controls-row button:hover {
-    background-color: #444;
-    border-color: #00eeff; /* Cyan glow on hover */
+/* 5. 3D Buttons */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.music-row {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    background: #334155;
+    color: #f8fafc;
+    border: none;
+    border-bottom: 4px solid #1e293b;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-family: 'Inter', sans-serif;
+}
+
+button:hover {
+    background: #475569;
+}
+
+button:active {
+    border-bottom-width: 0px;
+    transform: translateY(4px);
+}
+
+#pause-btn {
+    width: 100%;
+    font-size: 0.8rem;
 }

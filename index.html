@@ -4,33 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenShift Worker Tetris</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <div class="stats">
-            <h1 style="color: #00eeff; margin: 0;">TETRIS</h1>
+        <div class="stats-sidebar">
+            <h1 class="game-title">TETRIS</h1>
     
-            <div class="score-row" style="display: flex; gap: 20px; text-align: center;">
-                <div>
-                    <div style="font-size: 0.7rem; color: #888;">HIGH</div>
-                    <div id="highScore" style="font-size: 1.2rem;">140</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.7rem; color: #888;">SCORE</div>
-                    <div id="score" style="font-size: 1.2rem;">0</div>
-                </div>
+            <div class="card">
+                <div class="label">HIGH SCORE</div>
+                <div id="highScore" class="value">0</div>
             </div>
 
-            <div style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">NEXT</div>
-            <canvas id="next" width="80" height="80"></canvas>
+            <div class="card">
+                <div class="label">SCORE</div>
+                <div id="score" class="value">0</div>
+            </div>
 
-            <div class="music-grid" style="display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 15px;">
-                <div style="display: flex; gap: 5px;">
-                    <button id="mute-btn" style="flex: 1;">🔇 Mute</button>
-                    <button id="next-track-btn" style="flex: 1;">⏭️ Next</button>
+            <div class="card next-card">
+                <div class="label">NEXT</div>
+                <canvas id="next" width="80" height="80"></canvas>
+            </div>
+
+            <div class="controls-panel">
+                <div class="music-row">
+                    <button id="mute-btn" title="Toggle Mute">🔇</button>
+                    <button id="next-track-btn" title="Next Track">⏭️</button>
                 </div>
-                <button id="pause-btn">⏸️ Pause</button>
+                <button id="pause-btn">PAUSE GAME</button>
             </div>              
         </div>
         <canvas id="tetris" width="240" height="400"></canvas>
