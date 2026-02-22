@@ -9,29 +9,29 @@
 <body>
     <div class="game-container">
         <div class="stats">
-            <h1 style="margin: 0 0 10px 0; color: #00eeff;">TETRIS</h1>
+            <h1 style="color: #00eeff; margin: 0;">TETRIS</h1>
     
-            <div class="score-row">
+            <div class="score-row" style="display: flex; gap: 20px; text-align: center;">
                 <div>
-                    <div class="label" style="font-size: 0.7rem;">HIGH</div>
-                    <div id="highScore" style="font-size: 1.2rem;">0</div>
+                    <div style="font-size: 0.7rem; color: #888;">HIGH</div>
+                    <div id="highScore" style="font-size: 1.2rem;">140</div>
                 </div>
-        <div>
-            <div class="label" style="font-size: 0.7rem;">SCORE</div>
-            <div id="score" style="font-size: 1.2rem;">0</div>
-        </div>
-    </div>
-            <div class="label">Next</div>
+                <div>
+                    <div style="font-size: 0.7rem; color: #888;">SCORE</div>
+                    <div id="score" style="font-size: 1.2rem;">0</div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">NEXT</div>
             <canvas id="next" width="80" height="80"></canvas>
-            <div class="label">High Score</div>
-            <div id="highScore">0</div>
-            <div class="label">Score</div>
-            <div id="score">0</div>
-            <div class="music-grid">
-                <button id="mute-btn">🔇 Mute</button>
-                <button id="next-track-btn">⏭️ Next</button>
+
+            <div class="music-grid" style="display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 15px;">
+                <div style="display: flex; gap: 5px;">
+                    <button id="mute-btn" style="flex: 1;">🔇 Mute</button>
+                    <button id="next-track-btn" style="flex: 1;">⏭️ Next</button>
+                </div>
                 <button id="pause-btn">⏸️ Pause</button>
-            </div>            
+            </div>              
         </div>
         <canvas id="tetris" width="240" height="400"></canvas>
     </div>

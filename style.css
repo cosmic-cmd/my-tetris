@@ -20,10 +20,12 @@ body {
     border-radius: 8px;
 }
 
+/* 3. Layout Cleanup */
 .stats {
     display: flex;
     flex-direction: column;
-    width: 160px; /* Fixed width prevents sidebar from wobbling */
+    align-items: center; /* Center everything in the sidebar */
+    gap: 10px;
 }
 
 /* Move Scores onto one line */
@@ -82,4 +84,29 @@ canvas {
 /* Make the pause button full width below them */
 #pause-btn {
     grid-column: span 2;
+}
+
+/* 1. Shrink the Next preview */
+#next {
+    width: 80px;
+    height: 80px;
+    background-color: #000;
+    border: 2px solid #333;
+    margin-top: 5px;
+}
+
+/* 2. Professional Dark Buttons */
+.controls-row button, .music-grid button {
+    background-color: #333; /* Darker background */
+    color: #eee;           /* Light text */
+    border: 1px solid #444;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.controls-row button:hover {
+    background-color: #444;
+    border-color: #00eeff; /* Cyan glow on hover */
 }
