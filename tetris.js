@@ -88,6 +88,22 @@ class Tetris {
         this.dropCounter = 0;
     }
 
+    playerHardDrop() {
+    // Keep dropping until it hits something
+    while (!this.collide(this.arena, this.player)) {
+        this.player.pos.y++;
+    }
+    // Back up one space because the loop stopped AFTER hitting something
+    this.player.pos.y--;
+    
+    // Finalize the position
+    this.merge(this.arena, this.player);
+    this.playerReset();
+    this.arenaSweep();
+    this.updateScore();
+    this.dropCounter = 0;
+    }   
+
     playerMove(dir) {
         this.player.pos.x += dir;
         if (this.collide(this.arena, this.player)) {
@@ -188,9 +204,13 @@ const game = new Tetris(canvas);
 
 // Input Handling
 document.addEventListener('keydown', event => {
-    if (event.keyCode === 37) game.playerMove(-1);
-    else if (event.keyCode === 39) game.playerMove(1);
-    else if (event.keyCode === 40) game.playerDrop();
-    else if (event.keyCode === 81) game.playerRotate(-1);
-    else if (event.keyCode === 87) game.playerRotate(1);
+    if (event.keyCode === 37) game.playerMove(-1);      // Left
+    else if (event.keyCode === 39) game.playerMove(1);  // Right
+    else if (event.keyCode === 40) game.playerDrop();   // Down
+    else if (event.keyCode === 81) game.playerRotate(-1); // Q
+    else if (event.keyCode === 87) game.playerRotate(1);  // W
+    else if (event.keyCode === 32) {                    // Spacebar
+        event.preventDefault(); // Prevents the page from scrolling down
+        game.playerHardDrop();
+    }
 });
