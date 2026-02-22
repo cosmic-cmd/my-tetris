@@ -101,17 +101,11 @@ class Tetris {
     }
 
     playerHardDrop() {
-    // Keep dropping until it hits something
     while (!this.collide(this.arena, this.player)) {
         this.player.pos.y++;
     }
-    // Back up one space because the loop stopped AFTER hitting something
     this.player.pos.y--;
-    
-    // Finalize the position
-    this.merge(this.arena, this.player);
     this.playerReset();
-    this.arenaSweep();
     this.updateScore();
     this.dropCounter = 0;
     }   
@@ -175,10 +169,18 @@ class Tetris {
     }
 
     draw() {
-        this.context.fillStyle = '#000';
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawMatrix(this.arena, {x: 0, y: 0});
-        this.drawMatrix(this.player.matrix, this.player.pos);
+    // Fill background
+    this.context.fillStyle = '#000';
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw the static board
+    this.drawMatrix(this.arena, {x: 0, y: 0});
+
+    // --- ADD THIS LINE ---
+    this.drawGhost();
+
+    // Draw the falling piece
+    this.drawMatrix(this.player.matrix, this.player.pos);
     }
 
     drawNext() {
@@ -236,7 +238,7 @@ class Tetris {
     }
 }
 
-updateScore() {
+    updateScore() {
     document.getElementById('score').innerText = this.player.score;
     
     // Check for new High Score
@@ -245,6 +247,27 @@ updateScore() {
         localStorage.setItem('tetrisHighScore', this.highScore);
     }
     document.getElementById('highScore').innerText = this.highScore;
+}
+
+    drawGhost() {
+    // 1. Create a "fake" player at the real player's position
+    const ghost = {
+        pos: { x: this.player.pos.x, y: this.player.pos.y },
+        matrix: this.player.matrix
+    };
+
+    // 2. Drop the ghost until it hits something
+    while (!this.collide(this.arena, ghost)) {
+        ghost.pos.y++;
+    }
+    
+    // 3. Move back up one step to the last valid position
+    ghost.pos.y--;
+
+    // 4. Draw it with very low opacity so it looks like a shadow
+    this.context.globalAlpha = 0.15; // Subtle 15% transparency
+    this.drawMatrix(ghost.matrix, ghost.pos);
+    this.context.globalAlpha = 1.0;  // Reset opacity for the real piece
 }
 }
 
