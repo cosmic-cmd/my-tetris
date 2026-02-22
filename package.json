@@ -1,0 +1,11 @@
+{
+  "name": "github-tetris",
+  "version": "1.0.0",
+  "description": "A modular JS Tetris for GitHub",
+  "main": "tetris.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "author": "cosmic-cmd",
+  "license": "MIT"
+}
