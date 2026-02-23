@@ -1,3 +1,33 @@
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        // Random velocity for "flying" effect
+        this.velocity = {
+            x: (Math.random() - 0.5) * 0.5,
+            y: (Math.random() - 0.5) * 0.5
+        };
+        this.alpha = 1; // For fading out
+        this.life = 1.0;
+    }
+
+    draw(context) {
+        context.save();
+        context.globalAlpha = this.alpha;
+        context.fillStyle = this.color;
+        // Draw small 0.1 unit particles (since the canvas is scaled)
+        context.fillRect(this.x, this.y, 0.15, 0.15);
+        context.restore();
+    }
+
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.life -= 0.02; // Fade speed
+        this.alpha = Math.max(0, this.life);
+    }
+}
 class Tetris {
     constructor(canvas) {
         this.canvas = canvas;
@@ -12,7 +42,7 @@ class Tetris {
         this.player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
         this.nextPiece = null;
 
-        // Reverted to your preferred Neon Colors
+        // Reverted to Neon Colors
         this.colors = [
             null,
             '#FF0D72', // Neon Pink
@@ -29,14 +59,16 @@ class Tetris {
         this.lastTime = 0;
         this.tracks = [
             'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
-            'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3'
+            'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3',
+            'https://cdn.pixabay.com/audio/2024/01/09/audio_e3e11a1439.mp3',
+            'https://cdn.pixabay.com/audio/2025/04/10/audio_9ce76240d5.mp3'
         ];
         this.currentTrack = 0;
         this.audio = new Audio(this.tracks[this.currentTrack]);
         this.audio.loop = true;
         this.paused = true; // Start paused for cleaner UI
         this.highScore = localStorage.getItem('tetrisHighScore') || 0;
-        
+        this.particles = []; // Track active dust particles
         this.playerReset();
         this.updateScore();
         this.draw(); // Initial draw
@@ -142,16 +174,25 @@ class Tetris {
     }
 
     arenaSweep() {
-        let rowCount = 1;
-        outer: for (let y = this.arena.length - 1; y > 0; --y) {
-            for (let x = 0; x < this.arena[y].length; ++x) {
-                if (this.arena[y][x] === 0) continue outer;
+    let rowCount = 1;
+    outer: for (let y = this.arena.length - 1; y > 0; --y) {
+        for (let x = 0; x < this.arena[y].length; ++x) {
+            if (this.arena[y][x] === 0) continue outer;
+        }
+
+        // --- NEW: Trigger Particles for each block in the row ---
+        for (let x = 0; x < this.arena[y].length; ++x) {
+            const color = this.colors[this.arena[y][x]];
+            for (let i = 0; i < 4; i++) { // 4 particles per block
+                this.particles.push(new Particle(x, y, color));
             }
-            const row = this.arena.splice(y, 1)[0].fill(0);
-            this.arena.unshift(row);
-            ++y;
-            this.player.score += rowCount * 10;
-            rowCount *= 2;
+        }
+
+        const row = this.arena.splice(y, 1)[0].fill(0);
+        this.arena.unshift(row);
+        ++y;
+        this.player.score += rowCount * 10;
+        rowCount *= 2;
         }
     }
 
@@ -167,9 +208,20 @@ class Tetris {
     draw() {
         this.context.fillStyle = '#000';
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.drawMatrix(this.arena, {x: 0, y: 0});
         this.drawGhost();
         this.drawMatrix(this.player.matrix, this.player.pos);
+
+        // --- NEW: Update and Draw Particles ---
+        this.particles.forEach((particle, index) => {
+            if (particle.alpha <= 0) {
+                this.particles.splice(index, 1);
+            } else {
+                particle.update();
+                particle.draw(this.context);
+            }
+        });     
     }
 
     drawNext() {
