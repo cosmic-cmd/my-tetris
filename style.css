@@ -1,4 +1,4 @@
-/* 1. True Black Night Theme */
+/* 1. Global Setup & Orbitron Font */
 body {
     background: #050505;
     color: #ffffff;
@@ -8,9 +8,11 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden;
 }
 
 .game-container {
+    position: relative;
     display: flex;
     gap: 25px;
     padding: 25px;
@@ -20,6 +22,66 @@ body {
     box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
+/* 2. Start Screen Overlay */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.high-score-display {
+    font-family: 'Orbitron', sans-serif;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+.instructions {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #222;
+    margin-bottom: 30px;
+}
+
+.instructions p {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin: 8px 0;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+#start-btn {
+    background: transparent;
+    color: #00eeff;
+    border: 2px solid #00eeff;
+    padding: 15px 40px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#start-btn:hover {
+    background: #00eeff;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 238, 255, 0.4);
+}
+
+/* 3. Sidebar & Stats */
 .stats-sidebar {
     display: flex;
     flex-direction: column;
@@ -36,12 +98,33 @@ body {
     text-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
 }
 
-/* 2. Sleek Dark Cards */
 .card {
     background: #151515;
     padding: 12px;
     border-radius: 6px;
     border: 1px solid #252525;
+}
+
+.preview-section {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.preview-card {
+    flex: 1; /* Makes both boxes equal width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 4px !important;
+}
+
+#hold, #next {
+    width: 50px; /* Scaled down for the side-by-side look */
+    height: 50px;
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 5px;
+    border: 1px solid #333;
 }
 
 .label {
@@ -58,24 +141,13 @@ body {
     color: #eee;
 }
 
-/* 3. Canvas */
+/* 4. Canvas & Buttons */
 #tetris {
     background-color: #000;
     border: 2px solid #222;
     border-radius: 4px;
 }
 
-.next-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 5px;
-}
-
-#next {
-    background: #000;
-}
-
-/* 4. Balanced Controls */
 .controls-panel {
     display: flex;
     flex-direction: column;
@@ -101,18 +173,10 @@ button {
     font-family: 'Orbitron', sans-serif;
 }
 
-/* Mute and Next buttons are exactly half width */
-#mute-btn, #next-track-btn {
-    flex: 1;
-}
-
-#pause-btn {
-    width: 100%;
-}
+#mute-btn, #next-track-btn { flex: 1; }
+#pause-btn { width: 100%; }
 
 button:hover {
-    background: #252525;
     border-color: #00eeff;
     color: #fff;
-    box-shadow: 0 0 8px rgba(0, 238, 255, 0.2);
 }

@@ -9,6 +9,22 @@
 </head>
 <body>
     <div class="game-container">
+        <div id="start-screen" class="overlay">
+            <h1 class="game-title">TETRIS</h1>
+            <div class="high-score-display">HIGH SCORE: <span id="overlay-highScore">0</span></div>
+            
+            <div class="instructions">
+                <p>⬅️ ➡️ : MOVE</p>
+                <p>⬇️ : SOFT DROP</p>
+                <p>SPACE : HARD DROP</p>
+                <p>Q / W : ROTATE</p>
+                <p>P : PAUSE</p>
+                <p>SHIFT : HOLD</p>
+            </div>
+            
+            <button id="start-btn">START MISSION</button>
+        </div>
+
         <div class="stats-sidebar">
             <h1 class="game-title">TETRIS</h1>
     
@@ -22,19 +38,23 @@
                 <div id="score" class="value">0</div>
             </div>
 
-            <div class="card next-card">
-                <div class="label">NEXT</div>
-                <div class="next-wrapper">
+            <div class="preview-section">
+                <div class="card preview-card">
+                    <div class="label">HOLD (⇧)</div>
+                    <canvas id="hold" width="80" height="80"></canvas>
+                </div>
+                <div class="card preview-card">
+                    <div class="label">NEXT</div>
                     <canvas id="next" width="80" height="80"></canvas>
                 </div>
             </div>
-
+            
             <div class="controls-panel">
                 <div class="button-row">
                     <button id="mute-btn">🔇 MUTE</button>
                     <button id="next-track-btn">⏭️ NEXT</button>
                 </div>
-                <button id="pause-btn">RESUME GAME</button>
+                <button id="pause-btn">PAUSE GAME</button>
             </div>              
         </div>
         <canvas id="tetris" width="240" height="400"></canvas>

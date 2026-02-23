@@ -3,31 +3,31 @@ class Particle {
         this.x = x;
         this.y = y;
         this.color = color;
-        // Random velocity for "flying" effect
-        this.velocity = {
-            x: (Math.random() - 0.5) * 0.5,
-            y: (Math.random() - 0.5) * 0.5
+        this.velocity = { 
+            x: (Math.random() - 0.5) * 0.4, 
+            y: (Math.random() - 0.5) * 0.4 
         };
-        this.alpha = 1; // For fading out
         this.life = 1.0;
-    }
-
-    draw(context) {
-        context.save();
-        context.globalAlpha = this.alpha;
-        context.fillStyle = this.color;
-        // Draw small 0.1 unit particles (since the canvas is scaled)
-        context.fillRect(this.x, this.y, 0.15, 0.15);
-        context.restore();
     }
 
     update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.life -= 0.02; // Fade speed
-        this.alpha = Math.max(0, this.life);
+        this.life -= 0.025;
+    }
+
+    draw(ctx) {
+        const currentAlpha = Math.max(0, this.life);
+        ctx.save();
+        ctx.globalAlpha = currentAlpha;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = this.color;
+        ctx.fillRect(this.x, this.y, 0.12, 0.12);
+        ctx.restore(); 
     }
 }
+
 class Tetris {
     constructor(canvas) {
         this.canvas = canvas;
@@ -39,24 +39,30 @@ class Tetris {
         this.nextContext.scale(20, 20);
 
         this.arena = this.createMatrix(12, 20);
-        this.player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
+        this.player = { 
+            pos: {x: 0, y: 0}, 
+            matrix: null, 
+            score: 0, 
+            hold: null, 
+            canHold: true 
+        };
         this.nextPiece = null;
+        this.particles = [];
 
-        // Reverted to Neon Colors
+        this.holdCanvas = document.getElementById('hold');
+        this.holdContext = this.holdCanvas.getContext('2d');
+        this.holdContext.scale(20, 20);
+
         this.colors = [
-            null,
-            '#FF0D72', // Neon Pink
-            '#0DC2FF', // Electric Blue
-            '#0DFF72', // Neon Green
-            '#F538FF', // Deep Purple
-            '#FF8E0D', // Neon Orange
-            '#FFE138', // Bright Yellow
-            '#3877FF'  // Royal Blue
+            null, '#FF0D72', '#0DC2FF', '#0DFF72', 
+            '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'
         ];
 
         this.dropCounter = 0;
         this.dropInterval = 1000;
         this.lastTime = 0;
+        this.paused = true; 
+
         this.tracks = [
             'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
             'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3',
@@ -66,12 +72,11 @@ class Tetris {
         this.currentTrack = 0;
         this.audio = new Audio(this.tracks[this.currentTrack]);
         this.audio.loop = true;
-        this.paused = true; // Start paused for cleaner UI
+        
         this.highScore = localStorage.getItem('tetrisHighScore') || 0;
-        this.particles = []; // Track active dust particles
         this.playerReset();
         this.updateScore();
-        this.draw(); // Initial draw
+        this.draw();
     }
 
     createPiece(type) {
@@ -138,6 +143,35 @@ class Tetris {
         this.dropCounter = 0;
     }
 
+    playerHold() {
+        if (!this.player.canHold) return;
+
+        if (this.player.hold === null) {
+            // First time holding
+            this.player.hold = this.player.matrix;
+            this.playerReset();
+        } else {
+            // Swap pieces
+            const temp = this.player.matrix;
+            this.player.matrix = this.player.hold;
+            this.player.hold = temp;
+        
+            // Reset position to top
+            this.player.pos.y = 0;
+            this.player.pos.x = (this.arena[0].length / 2 | 0) - (this.player.matrix[0].length / 2 | 0);
+        }
+
+        this.player.canHold = false; // Lock hold until piece lands
+        this.drawHold();
+    }
+
+    drawHold() {
+            this.holdContext.clearRect(0, 0, this.holdCanvas.width, this.holdCanvas.height);
+        if (this.player.hold) {
+            this.drawMatrix(this.player.hold, {x: 1, y: 1}, this.holdContext);
+        }
+    }
+
     playerMove(dir) {
         this.player.pos.x += dir;
         if (this.collide(this.arena, this.player)) this.player.pos.x -= dir;
@@ -156,6 +190,8 @@ class Tetris {
             this.updateScore();
         }
         this.drawNext();
+        this.player.canHold = true; // Unlock
+        this.drawHold(); // Refresh hold display
     }
 
     playerRotate(dir) {
@@ -174,25 +210,22 @@ class Tetris {
     }
 
     arenaSweep() {
-    let rowCount = 1;
-    outer: for (let y = this.arena.length - 1; y > 0; --y) {
-        for (let x = 0; x < this.arena[y].length; ++x) {
-            if (this.arena[y][x] === 0) continue outer;
-        }
-
-        // --- NEW: Trigger Particles for each block in the row ---
-        for (let x = 0; x < this.arena[y].length; ++x) {
-            const color = this.colors[this.arena[y][x]];
-            for (let i = 0; i < 4; i++) { // 4 particles per block
-                this.particles.push(new Particle(x, y, color));
+        let rowCount = 1;
+        outer: for (let y = this.arena.length - 1; y > 0; --y) {
+            for (let x = 0; x < this.arena[y].length; ++x) {
+                if (this.arena[y][x] === 0) continue outer;
             }
-        }
+            
+            for (let x = 0; x < this.arena[y].length; ++x) {
+                const color = this.colors[this.arena[y][x]];
+                for(let i=0; i<4; i++) this.particles.push(new Particle(x, y, color));
+            }
 
-        const row = this.arena.splice(y, 1)[0].fill(0);
-        this.arena.unshift(row);
-        ++y;
-        this.player.score += rowCount * 10;
-        rowCount *= 2;
+            const row = this.arena.splice(y, 1)[0].fill(0);
+            this.arena.unshift(row);
+            ++y;
+            this.player.score += rowCount * 10;
+            rowCount *= 2;
         }
     }
 
@@ -203,25 +236,42 @@ class Tetris {
             localStorage.setItem('tetrisHighScore', this.highScore);
         }
         document.getElementById('highScore').innerText = this.highScore;
+        const overlayHS = document.getElementById('overlay-highScore');
+        if(overlayHS) overlayHS.innerText = this.highScore;
     }
 
+    togglePause() {
+        this.paused = !this.paused;
+        const btn = document.getElementById('pause-btn');
+        btn.innerText = this.paused ? '▶️ RESUME' : '⏸️ PAUSE';
+        
+        if (this.paused) {
+            this.audio.pause();
+        } else {
+            if (!this.audio.muted) {
+                this.audio.play();
+            }
+            this.update();
+        }
+    }
+    
     draw() {
         this.context.fillStyle = '#000';
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+        
         this.drawMatrix(this.arena, {x: 0, y: 0});
         this.drawGhost();
         this.drawMatrix(this.player.matrix, this.player.pos);
 
-        // --- NEW: Update and Draw Particles ---
-        this.particles.forEach((particle, index) => {
-            if (particle.alpha <= 0) {
-                this.particles.splice(index, 1);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            p.update();
+            if (p.life <= 0) {
+                this.particles.splice(i, 1);
             } else {
-                particle.update();
-                particle.draw(this.context);
+                p.draw(this.context);
             }
-        });     
+        }
     }
 
     drawNext() {
@@ -233,19 +283,13 @@ class Tetris {
         matrix.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
-                    // Main Neon Fill
+                    context.save();
                     context.fillStyle = this.colors[value];
                     context.fillRect(x + offset.x, y + offset.y, 1, 1);
-                    
-                    // 3D Glass Effect (Inner Highlight)
-                    context.fillStyle = 'rgba(255,255,255,0.4)';
-                    context.fillRect(x + offset.x, y + offset.y, 0.9, 0.1); // Top light
-                    context.fillRect(x + offset.x, y + offset.y, 0.1, 0.9); // Left light
-                    
-                    // Shadow Edge
-                    context.fillStyle = 'rgba(0,0,0,0.3)';
-                    context.fillRect(x + offset.x + 0.9, y + offset.y, 0.1, 1); // Right dark
-                    context.fillRect(x + offset.x, y + offset.y + 0.9, 1, 0.1); // Bottom dark
+                    context.fillStyle = 'rgba(255,255,255,0.3)';
+                    context.fillRect(x + offset.x, y + offset.y, 0.9, 0.1);
+                    context.fillRect(x + offset.x, y + offset.y, 0.1, 0.9);
+                    context.restore();
                 }
             });
         });
@@ -255,9 +299,10 @@ class Tetris {
         const ghost = { pos: { x: this.player.pos.x, y: this.player.pos.y }, matrix: this.player.matrix };
         while (!this.collide(this.arena, ghost)) ghost.pos.y++;
         ghost.pos.y--;
+        this.context.save();
         this.context.globalAlpha = 0.15;
         this.drawMatrix(ghost.matrix, ghost.pos);
-        this.context.globalAlpha = 1.0;
+        this.context.restore();
     }
 
     update(time = 0) {
@@ -269,41 +314,56 @@ class Tetris {
         this.draw();
         requestAnimationFrame(this.update.bind(this));
     }
-
-    togglePause() {
-        this.paused = !this.paused;
-        document.getElementById('pause-btn').innerText = this.paused ? 'RESUME GAME' : 'PAUSE GAME';
-        if (!this.paused) {
-            if (!this.audio.muted) this.audio.play();
-            this.update();
-        } else {
-            this.audio.pause();
-        }
-    }
 }
 
 // Global Init
 const canvas = document.getElementById('tetris');
 const game = new Tetris(canvas);
 
+document.getElementById('start-btn').addEventListener('click', () => {
+    document.getElementById('start-screen').style.display = 'none';
+    game.paused = false;
+    game.update();
+    if (!game.audio.muted) game.audio.play();
+});
+
 document.getElementById('mute-btn').addEventListener('click', () => {
     game.audio.muted = !game.audio.muted;
     document.getElementById('mute-btn').innerText = game.audio.muted ? '🔊 UNMUTE' : '🔇 MUTE';
+    
+    if (game.audio.muted) {
+        game.audio.pause();
+    } else if (!game.paused) {
+        game.audio.play();
+    }
 });
+
 document.getElementById('next-track-btn').addEventListener('click', () => {
     game.audio.pause();
     game.currentTrack = (game.currentTrack + 1) % game.tracks.length;
     game.audio.src = game.tracks[game.currentTrack];
-    if (!game.audio.muted) game.audio.play();
+    if (!game.audio.muted && !game.paused) game.audio.play();
 });
+
 document.getElementById('pause-btn').addEventListener('click', () => game.togglePause());
 
 document.addEventListener('keydown', event => {
+    // Only 'P' works while paused
+    if (game.paused && event.keyCode !== 80) return;
+
     if (event.keyCode === 37) game.playerMove(-1);
     else if (event.keyCode === 39) game.playerMove(1);
     else if (event.keyCode === 40) game.playerDrop();
     else if (event.keyCode === 81) game.playerRotate(-1);
     else if (event.keyCode === 87) game.playerRotate(1);
     else if (event.keyCode === 80) game.togglePause();
-    else if (event.keyCode === 32) { event.preventDefault(); game.playerHardDrop(); }
+    else if (event.keyCode === 32) { 
+        event.preventDefault(); 
+        game.playerHardDrop(); 
+    }
+    // SHIFT KEY FOR HOLD
+    else if (event.keyCode === 16) { 
+        event.preventDefault(); 
+        game.playerHold(); 
+    }
 });
