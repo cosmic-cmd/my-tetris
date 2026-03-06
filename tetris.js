@@ -64,9 +64,9 @@ class Tetris {
         this.paused = true; 
 
         this.tracks = [
-            'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
             'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3',
             'https://cdn.pixabay.com/audio/2024/01/09/audio_e3e11a1439.mp3',
+            'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
             'https://cdn.pixabay.com/audio/2025/04/10/audio_9ce76240d5.mp3'
         ];
         this.currentTrack = 0;
