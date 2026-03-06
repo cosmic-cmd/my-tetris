@@ -185,6 +185,8 @@ class Tetris {
         this.player.pos.y = 0;
         this.player.pos.x = (this.arena[0].length / 2 | 0) - (this.player.matrix[0].length / 2 | 0);
         if (this.collide(this.arena, this.player)) {
+            const playerName = prompt("GAME OVER! Enter your Agent Name:") || "Anonymous";
+            submitScore(playerName, this.player.score);
             this.arena.forEach(row => row.fill(0));
             this.player.score = 0;
             this.updateScore();
@@ -398,3 +400,6 @@ async function submitScore(name, score) {
     });
     loadLeaderboard();
 }
+
+// Initial load of the leaderboard from the server
+loadLeaderboard();
