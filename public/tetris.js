@@ -367,3 +367,34 @@ document.addEventListener('keydown', event => {
         game.playerHold(); 
     }
 });
+
+async function loadLeaderboard() {
+    const list = document.getElementById('leaderboard-list');
+    try {
+        const response = await fetch('/api/scores');
+        const scores = await response.json();
+        
+        if (scores.length === 0) {
+            list.innerHTML = '<li class="score-item">NO AGENTS REGISTERED</li>';
+            return;
+        }
+
+        list.innerHTML = scores.map(s => `
+            <li class="score-item">
+                <span class="score-name">${s.name}</span>
+                <span class="score-val">${s.score.toLocaleString()}</span>
+            </li>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = '<li class="score-item">OFFLINE MODE</li>';
+    }
+}
+
+async function submitScore(name, score) {
+    await fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, score })
+    });
+    loadLeaderboard();
+}
