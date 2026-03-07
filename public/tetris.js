@@ -394,24 +394,21 @@ class Tetris {
 
         this.context.save();
     
-        // THE FIX: 
-        // Since the canvas is scaled (e.g., 20x), a lineWidth of 1 is 20 pixels wide.
-        // We use a very small decimal to get a thin, sharp 1-pixel line.
-        this.context.lineWidth = 0.05; 
+        // Set the holographic cyan style
         this.context.strokeStyle = "#00eeff";
-        // This creates a pulse between 0.2 and 0.5 opacity based on time
-        this.context.globalAlpha = 0.35 + Math.sin(Date.now() / 200) * 0.15;
+        this.context.globalAlpha = 0.5;
+
+        this.context.lineWidth = 0.05; 
 
         ghost.matrix.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
-                    // Drawing a slightly smaller rect (0.9) helps 
-                    // the lines not "bleed" into each other.
+                    // Draw a simple, full-size box outline for each cell
                     this.context.strokeRect(
-                        ghost.pos.x + x + 0.05, 
-                        ghost.pos.y + y + 0.05, 
-                        0.9, 
-                        0.9
+                        ghost.pos.x + x, 
+                        ghost.pos.y + y, 
+                        1, 
+                        1
                     );
                 }
             });
