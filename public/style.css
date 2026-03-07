@@ -144,6 +144,17 @@ body {
     box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
+@keyframes danger-pulse {
+    0% { box-shadow: 0 0 5px #ff0000; border-color: #ff0000; }
+    50% { box-shadow: 0 0 25px #ff4444; border-color: #ff4444; }
+    100% { box-shadow: 0 0 5px #ff0000; border-color: #ff0000; }
+}
+
+.danger-zone {
+    animation: danger-pulse 0.8s infinite !important;
+    transition: all 0.3s ease;
+}
+
 /* 2. Start Screen Overlay */
 .overlay {
     position: absolute;
@@ -175,6 +186,22 @@ body {
     border-bottom: 1px dotted rgba(13, 194, 255, 0.3);
     margin: 0 10px;
     height: 1em;
+}
+
+.combo-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+#combo-value {
+    color: #00eeff; /* signature cyan */
+    text-shadow: 0 0 10px rgba(0, 238, 255, 0.5);
+    font-size: 1.2rem;
+}
+
+/* A little "pop" animation when the combo increases */
+.combo-bump {
+    transform: scale(1.1);
+    filter: brightness(1.5);
 }
 
 .agent-score {

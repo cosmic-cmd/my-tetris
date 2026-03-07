@@ -57,7 +57,8 @@ class Tetris {
             null, '#FF0D72', '#0DC2FF', '#0DFF72', 
             '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'
         ];
-
+        
+        this.combo = 0;
         this.dropCounter = 0;
         this.dropInterval = 1000;
         this.lastTime = 0;
@@ -234,8 +235,16 @@ class Tetris {
             const row = this.arena.splice(y, 1)[0].fill(0);
             this.arena.unshift(row);
             ++y;
-            this.player.score += rowCount * 10;
-            rowCount *= 2;
+            rowCount++;
+        }
+
+        if (rowCount > 0) {
+            // Calculate points: (Base Score * Lines) + (Combo Bonus)
+            player.score += (rowCount * 10) + (player.combo * 50);
+            player.combo++; 
+            updateScore();
+        } else {
+            player.combo = 0; 
         }
     }
 
@@ -248,6 +257,23 @@ class Tetris {
         document.getElementById('highScore').innerText = this.highScore;
         const overlayHS = document.getElementById('overlay-highScore');
         if(overlayHS) overlayHS.innerText = this.highScore;
+
+        function updateComboDisplay() {
+            const comboElement = document.getElementById('combo-value');
+            const comboCard = document.querySelector('.combo-card');
+    
+            // Update the text
+            comboElement.innerText = `X${player.combo}`;
+
+            // If combo is active, make it glow and "pop"
+            if (player.combo > 1) {
+                comboCard.classList.add('combo-bump');
+                setTimeout(() => comboCard.classList.remove('combo-bump'), 200);
+                comboElement.style.color = "#00eeff";
+            } else {
+                comboElement.style.color = "#666"; // Dim it when no combo
+            }
+        }
     }
 
     togglePause() {
@@ -280,6 +306,18 @@ class Tetris {
                 this.particles.splice(i, 1);
             } else {
                 p.draw(this.context);
+            }
+        }
+
+        function checkDanger() {
+            const tetrisCanvas = document.getElementById('tetris');
+            // Check the top 4 rows of the arena for any non-zero blocks
+            const isDanger = arena.slice(0, 4).some(row => row.some(value => value !== 0));
+
+            if (isDanger) {
+                tetrisCanvas.classList.add('danger-zone');
+            } else {
+                tetrisCanvas.classList.remove('danger-zone');
             }
         }
     }
