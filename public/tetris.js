@@ -75,7 +75,7 @@ class Tetris {
         this.audio = new Audio(this.tracks[this.currentTrack]);
         this.audio.loop = true;
 
-        this.playerName = "Guest"; // Default name
+        this.playerName = "AGENT"; // Default name
         this.highScore = localStorage.getItem('tetrisHighScore') || 0;
         this.playerReset();
         this.updateScore();
