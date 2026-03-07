@@ -250,29 +250,35 @@ class Tetris {
 
     updateScore() {
         document.getElementById('score').innerText = this.player.score;
+
         if (this.player.score > this.highScore) {
             this.highScore = this.player.score;
             localStorage.setItem('tetrisHighScore', this.highScore);
         }
+
         document.getElementById('highScore').innerText = this.highScore;
+    
         const overlayHS = document.getElementById('overlay-highScore');
         if(overlayHS) overlayHS.innerText = this.highScore;
 
-        function updateComboDisplay() {
-            const comboElement = document.getElementById('combo-value');
-            const comboCard = document.querySelector('.combo-card');
-    
-            // Update the text
-            comboElement.innerText = `X${player.combo}`;
+        
+        this.updateComboDisplay();
+    }
 
-            // If combo is active, make it glow and "pop"
-            if (player.combo > 1) {
-                comboCard.classList.add('combo-bump');
-                setTimeout(() => comboCard.classList.remove('combo-bump'), 200);
-                comboElement.style.color = "#00eeff";
-            } else {
-                comboElement.style.color = "#666"; // Dim it when no combo
-            }
+    updateComboDisplay() {
+        const comboElement = document.getElementById('combo-value');
+        const comboCard = document.querySelector('.combo-card');
+    
+        if (!comboElement || !comboCard) return; // Safety check
+
+        comboElement.innerText = `X${this.player.combo}`;
+
+        if (this.player.combo > 1) {
+            comboCard.classList.add('combo-bump');
+            setTimeout(() => comboCard.classList.remove('combo-bump'), 200);
+            comboElement.style.color = "#00eeff";
+        } else {
+            comboElement.style.color = "#666";
         }
     }
 
