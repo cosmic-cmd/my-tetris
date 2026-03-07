@@ -43,30 +43,32 @@
 
 .score-item {
     display: flex;
-    align-items: baseline; /* Keeps text on the same visual line */
-    width: 320px; /* Adjust this to fit your screen width */
+    align-items: center; /* Vertical alignment */
+    width: 300px;
+    margin: 10px auto;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    margin: 4px 0;
 }
 
 .agent-name {
     color: #00eeff;
-    flex-shrink: 0; /* Prevents name from squishing */
+    flex-shrink: 0; /* Keeps the name from squishing */
 }
 
 /* The "Leader Line" - these are the dots connecting name and score */
 .score-item::after {
     content: "";
-    flex-grow: 1;
-    border-bottom: 1px dotted rgba(0, 238, 255, 0.2);
+    flex-grow: 1; /* Fills the space between name and score */
+    border-bottom: 1px dotted rgba(0, 238, 255, 0.3);
     margin: 0 10px;
+    height: 1px;
+    order: 0; /* Keeps it in the middle */
 }
 
 .agent-score {
     color: #fff;
     flex-shrink: 0;
-    text-align: right;
+    margin-left: auto; /* This is the magic: pushes score to the far right */
+    padding-left: 10px;
 }
 
 .input-group {

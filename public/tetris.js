@@ -66,8 +66,7 @@ class Tetris {
         this.tracks = [
             'https://cdn.pixabay.com/audio/2024/01/15/audio_1890cd65f6.mp3',
             'https://cdn.pixabay.com/audio/2024/01/09/audio_e3e11a1439.mp3',
-            'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3',
-            'https://cdn.pixabay.com/audio/2025/04/10/audio_9ce76240d5.mp3'
+            'https://cdn.pixabay.com/audio/2024/01/12/audio_eb99a44c6a.mp3'
         ];
         this.currentTrack = 0;
         this.audio = new Audio(this.tracks[this.currentTrack]);
@@ -187,6 +186,15 @@ class Tetris {
         this.player.pos.x = (this.arena[0].length / 2 | 0) - (this.player.matrix[0].length / 2 | 0);
         if (this.collide(this.arena, this.player)) {
             submitScore(this.playerName, this.player.score);
+            // 2. Pause the game engine
+            this.paused = true;
+            this.audio.pause();
+
+            // 3. SHOW THE START SCREEN AGAIN
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.display = 'flex'; // Brings back the overlay
+            
+            // 4. Reset the internal game state
             this.arena.forEach(row => row.fill(0));
             this.player.score = 0;
             this.updateScore();
@@ -328,6 +336,10 @@ document.getElementById('start-btn').addEventListener('click', () => {
         game.playerName = nameInput.value.trim().toUpperCase();
     }
     document.getElementById('start-screen').style.display = 'none';
+    // Reset timing variables so the game doesn't "jump"
+    game.lastTime = performance.now(); 
+    game.dropCounter = 0;
+    
     game.paused = false;
     game.update();
     if (!game.audio.muted) game.audio.play();
