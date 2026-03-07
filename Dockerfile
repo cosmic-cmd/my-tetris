@@ -13,9 +13,10 @@ RUN npm install --production
 # Copy game files
 COPY . .
 
-# OpenShift permissions fix
-RUN chmod -R 775 /usr/src/app
+# OpenShift standard for writable volumes
+RUN chgrp -R 0 /usr/src/app && chmod -R g=u /usr/src/app
 
 EXPOSE 8080
 
-CMD [ "npm", "start" ]
+# More efficient than 'npm start'
+CMD [ "node", "server.js" ]
