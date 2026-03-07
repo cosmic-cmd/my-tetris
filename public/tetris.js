@@ -42,7 +42,9 @@ class Tetris {
         this.player = { 
             pos: {x: 0, y: 0}, 
             matrix: null, 
-            score: 0, 
+            score: 0,
+            combo: 0,
+            lines: 0, 
             hold: null, 
             canHold: true 
         };
@@ -221,7 +223,7 @@ class Tetris {
     }
 
     arenaSweep() {
-        let rowCount = 1;
+        let burst = 0;
         outer: for (let y = this.arena.length - 1; y > 0; --y) {
             for (let x = 0; x < this.arena[y].length; ++x) {
                 if (this.arena[y][x] === 0) continue outer;
@@ -235,16 +237,26 @@ class Tetris {
             const row = this.arena.splice(y, 1)[0].fill(0);
             this.arena.unshift(row);
             ++y;
-            rowCount++;
+            burst++;
         }
 
-        if (rowCount > 0) {
-            // Calculate points: (Base Score * Lines) + (Combo Bonus)
-            player.score += (rowCount * 10) + (player.combo * 50);
-            player.combo++; 
-            updateScore();
+        if (burst > 0) {
+            // Exponential: 1=100, 2=400, 3=900, 4=1600
+            this.player.score += Math.pow(burst, 2) * 100;
+        
+            // Add streak bonus: 50 pts per combo level
+            this.player.score += (this.player.combo * 50);
+        
+            this.player.combo++; 
+        
+            // Update UI
+            document.getElementById('burst-value').innerText = burst;
+            this.updateScore();
         } else {
-            player.combo = 0; 
+            this.player.combo = 0;
+            // Reset the Burst display when no lines are cleared
+            document.getElementById('burst-value').innerText = 0;
+            this.updateScore();
         }
     }
 
@@ -261,15 +273,13 @@ class Tetris {
         const overlayHS = document.getElementById('overlay-highScore');
         if(overlayHS) overlayHS.innerText = this.highScore;
 
-        
         this.updateComboDisplay();
+        this.updateDangerStatus();
     }
 
     updateComboDisplay() {
         const comboElement = document.getElementById('combo-value');
-        const comboCard = document.querySelector('.combo-card');
-    
-        if (!comboElement || !comboCard) return; // Safety check
+        if (!comboElement) return;
 
         comboElement.innerText = `X${this.player.combo}`;
 
@@ -314,17 +324,24 @@ class Tetris {
                 p.draw(this.context);
             }
         }
+        this.updateDangerStatus();    
+    }
+    
+    updateDangerStatus() {
+        const tetrisCanvas = document.getElementById('tetris');
+        if (!tetrisCanvas) return;
 
-        function checkDanger() {
-            const tetrisCanvas = document.getElementById('tetris');
-            // Check the top 4 rows of the arena for any non-zero blocks
-            const isDanger = arena.slice(0, 4).some(row => row.some(value => value !== 0));
+        // Trigger when blocks reach row 10 (halfway up the board) 
+        // This gives you plenty of time to react.
+        const dangerThreshold = 10; 
+        const isDanger = this.arena.slice(0, dangerThreshold).some(row => 
+            row.some(value => value !== 0)
+        );
 
-            if (isDanger) {
-                tetrisCanvas.classList.add('danger-zone');
-            } else {
-                tetrisCanvas.classList.remove('danger-zone');
-            }
+        if (isDanger) {
+            tetrisCanvas.classList.add('danger-zone');
+        } else {
+            tetrisCanvas.classList.remove('danger-zone');
         }
     }
 

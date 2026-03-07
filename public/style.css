@@ -144,15 +144,22 @@ body {
     box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 
-@keyframes danger-pulse {
-    0% { box-shadow: 0 0 5px #ff0000; border-color: #ff0000; }
-    50% { box-shadow: 0 0 25px #ff4444; border-color: #ff4444; }
-    100% { box-shadow: 0 0 5px #ff0000; border-color: #ff0000; }
+/* Fix the Danger Zone colors */
+.danger-zone {
+    border: 3px solid #ff0000 !important;
+    /* 'alternate' makes it breathe in and out */
+    animation: danger-glow 0.8s infinite alternate ease-in-out;
 }
 
-.danger-zone {
-    animation: danger-pulse 0.8s infinite !important;
-    transition: all 0.3s ease;
+@keyframes danger-glow {
+    from {
+        box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.2), 0 0 5px rgba(255, 0, 0, 0.2);
+        border-color: #880000;
+    }
+    to {
+        box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.6), 0 0 15px rgba(255, 0, 0, 0.6);
+        border-color: #ff0000;
+    }
 }
 
 /* 2. Start Screen Overlay */
@@ -188,6 +195,22 @@ body {
     height: 1em;
 }
 
+.stat-row {
+    display: flex;
+    gap: 10px; /* Space between the two boxes */
+    margin-bottom: 15px;
+}
+
+/* Ensure the boxes take up equal width */
+.stat-box {
+    flex: 1;
+    min-width: 0; /* Prevents overflow */
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-align: center;
+}
+
 .combo-card {
     transition: transform 0.2s ease-in-out;
 }
@@ -198,10 +221,16 @@ body {
     font-size: 1.2rem;
 }
 
-/* A little "pop" animation when the combo increases */
 .combo-bump {
     transform: scale(1.1);
     filter: brightness(1.5);
+}
+
+/* Make the Burst number glow just like the Combo */
+/* Neon Burst Glow */
+#burst-value {
+    color: #00eeff;
+    text-shadow: 0 0 8px rgba(0, 238, 255, 0.8), 0 0 15px rgba(0, 238, 255, 0.5);
 }
 
 .agent-score {
