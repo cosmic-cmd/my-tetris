@@ -240,22 +240,32 @@ class Tetris {
             burst++;
         }
 
+        const burstEl = document.getElementById('burst-value');
+
         if (burst > 0) {
-            // Exponential: 1=100, 2=400, 3=900, 4=1600
             this.player.score += Math.pow(burst, 2) * 100;
-        
-            // Add streak bonus: 50 pts per combo level
             this.player.score += (this.player.combo * 50);
-        
             this.player.combo++; 
-        
-            // Update UI
-            document.getElementById('burst-value').innerText = burst;
+    
+            // SPECIAL BURST HANDLING
+            if (burstEl) {
+                if (burst === 4) {
+                    burstEl.innerText = "TETRIS!";
+                    burstEl.classList.add('tetris-flash');
+                    // Remove the class after the animation so it can re-trigger
+                    setTimeout(() => burstEl.classList.remove('tetris-flash'), 500);
+                } else {
+                    burstEl.innerText = burst;
+                    // Add a small 'pop' for regular bursts too
+                    burstEl.classList.add('combo-bump');
+                    setTimeout(() => burstEl.classList.remove('combo-bump'), 200);
+                }
+            }
+
             this.updateScore();
         } else {
             this.player.combo = 0;
-            // Reset the Burst display when no lines are cleared
-            document.getElementById('burst-value').innerText = 0;
+            if (burstEl) burstEl.innerText = 0;
             this.updateScore();
         }
     }
@@ -279,16 +289,24 @@ class Tetris {
 
     updateComboDisplay() {
         const comboElement = document.getElementById('combo-value');
+        // Using querySelector to find the card container for the bump effect
+        const comboCard = document.querySelector('.combo-card') || comboElement?.parentElement;
+
         if (!comboElement) return;
 
         comboElement.innerText = `X${this.player.combo}`;
 
-        if (this.player.combo > 1) {
-            comboCard.classList.add('combo-bump');
-            setTimeout(() => comboCard.classList.remove('combo-bump'), 200);
-            comboElement.style.color = "#00eeff";
+        if (this.player.combo >= 1) {
+            // Trigger the physical 'bump'
+            if (comboCard) {
+                comboCard.classList.add('combo-bump');
+                setTimeout(() => comboCard.classList.remove('combo-bump'), 200);
+            }
+            // Add the Cyan glow class
+            comboElement.classList.add('combo-active');
         } else {
-            comboElement.style.color = "#666";
+            // Back to dark/dimmed state
+            comboElement.classList.remove('combo-active');
         }
     }
 
