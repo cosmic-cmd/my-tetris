@@ -385,12 +385,38 @@ class Tetris {
     }
 
     drawGhost() {
-        const ghost = { pos: { x: this.player.pos.x, y: this.player.pos.y }, matrix: this.player.matrix };
+        const ghost = { 
+            pos: { x: this.player.pos.x, y: this.player.pos.y }, 
+            matrix: this.player.matrix 
+        };
         while (!this.collide(this.arena, ghost)) ghost.pos.y++;
         ghost.pos.y--;
+
         this.context.save();
-        this.context.globalAlpha = 0.15;
-        this.drawMatrix(ghost.matrix, ghost.pos);
+    
+        // THE FIX: 
+        // Since the canvas is scaled (e.g., 20x), a lineWidth of 1 is 20 pixels wide.
+        // We use a very small decimal to get a thin, sharp 1-pixel line.
+        this.context.lineWidth = 0.05; 
+        this.context.strokeStyle = "#00eeff";
+        // This creates a pulse between 0.2 and 0.5 opacity based on time
+        this.context.globalAlpha = 0.35 + Math.sin(Date.now() / 200) * 0.15;
+
+        ghost.matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    // Drawing a slightly smaller rect (0.9) helps 
+                    // the lines not "bleed" into each other.
+                    this.context.strokeRect(
+                        ghost.pos.x + x + 0.05, 
+                        ghost.pos.y + y + 0.05, 
+                        0.9, 
+                        0.9
+                    );
+                }
+            });
+        });
+
         this.context.restore();
     }
 
