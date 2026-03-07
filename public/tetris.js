@@ -137,8 +137,17 @@ class Tetris {
     }
 
     playerHardDrop() {
-        while (!this.collide(this.arena, this.player)) this.player.pos.y++;
+        // 1. Calculate the landing position
+        while (!this.collide(this.arena, this.player)) {
+            this.player.pos.y++;
+        }
         this.player.pos.y--;
+
+        // 2. TRIGGER THE CYAN BURST
+        // We pass the current piece position to our new impact function
+        this.createImpact(this.player.pos.x, this.player.pos.y);
+
+        // 3. Finalize the move
         this.merge(this.arena, this.player);
         this.playerReset();
         this.arenaSweep();
@@ -336,12 +345,28 @@ class Tetris {
         for (let i = this.particles.length - 1; i >= 0; i--) {
             const p = this.particles[i];
             p.update();
+
             if (p.life <= 0) {
                 this.particles.splice(i, 1);
             } else {
+                this.context.save();
+
+                // 1. Additive Blending: Makes overlapping sparks brighter
+                this.context.globalCompositeOperation = 'lighter';
+
+                // 2. Neon Glow: Uses the particle's own color for the glow
+                this.context.shadowBlur = 8;
+                this.context.shadowColor = p.color;
+
+                // 3. Fade Out: Optional - makes them vanish smoothly
+                this.context.globalAlpha = p.life;
+
                 p.draw(this.context);
+
+                this.context.restore();
             }
         }
+        
         this.updateDangerStatus();    
     }
     
@@ -415,6 +440,28 @@ class Tetris {
         });
 
         this.context.restore();
+    }
+
+    createImpact(posX, posY) {
+        const colors = ['#00eeff', '#ffffff', '#0099ff'];
+
+        // Loop through the piece matrix to find where to spawn sparks
+        this.player.matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    // Create 3-5 particles for every solid block in the piece
+                    for (let i = 0; i < 4; i++) {
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        // Spawn at the grid coordinate + a small random offset for "scatter"
+                        this.particles.push(new Particle(
+                            posX + x + Math.random(),
+                            posY + y + Math.random(),
+                            color
+                        ));
+                    }
+                }
+            });
+        });
     }
 
     update(time = 0) {
