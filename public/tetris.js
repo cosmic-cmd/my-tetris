@@ -72,7 +72,8 @@ class Tetris {
         this.currentTrack = 0;
         this.audio = new Audio(this.tracks[this.currentTrack]);
         this.audio.loop = true;
-        
+
+        this.playerName = "Guest"; // Default name
         this.highScore = localStorage.getItem('tetrisHighScore') || 0;
         this.playerReset();
         this.updateScore();
@@ -185,8 +186,7 @@ class Tetris {
         this.player.pos.y = 0;
         this.player.pos.x = (this.arena[0].length / 2 | 0) - (this.player.matrix[0].length / 2 | 0);
         if (this.collide(this.arena, this.player)) {
-            const playerName = prompt("GAME OVER! Enter your Agent Name:") || "Anonymous";
-            submitScore(playerName, this.player.score);
+            submitScore(this.playerName, this.player.score);
             this.arena.forEach(row => row.fill(0));
             this.player.score = 0;
             this.updateScore();
@@ -323,6 +323,10 @@ const canvas = document.getElementById('tetris');
 const game = new Tetris(canvas);
 
 document.getElementById('start-btn').addEventListener('click', () => {
+    const nameInput = document.getElementById('player-name-input');
+    if (nameInput && nameInput.value.trim() !== "") {
+        game.playerName = nameInput.value.trim().toUpperCase();
+    }
     document.getElementById('start-screen').style.display = 'none';
     game.paused = false;
     game.update();
@@ -376,29 +380,36 @@ async function loadLeaderboard() {
         const response = await fetch('/api/scores');
         const scores = await response.json();
         
-        if (scores.length === 0) {
-            list.innerHTML = '<li class="score-item">NO AGENTS REGISTERED</li>';
+        if (!scores || scores.length === 0) {
+            // Updated to match your new professional styling
+            list.innerHTML = '<li class="empty-list">OFFLINE MODE: NO DATA FOUND</li>';
             return;
         }
 
+        // This creates the dual-column look with the dotted line between
         list.innerHTML = scores.map(s => `
             <li class="score-item">
-                <span class="score-name">${s.name}</span>
-                <span class="score-val">${s.score.toLocaleString()}</span>
+                <span class="agent-name">${s.name}</span>
+                <span class="agent-score">${s.score.toLocaleString()}</span>
             </li>
         `).join('');
     } catch (err) {
-        list.innerHTML = '<li class="score-item">OFFLINE MODE</li>';
+        list.innerHTML = '<li class="empty-list">OFFLINE MODE: SYSTEM DISCONNECTED</li>';
     }
 }
 
 async function submitScore(name, score) {
-    await fetch('/api/scores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, score })
-    });
-    loadLeaderboard();
+    try {
+        await fetch('/api/scores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, score })
+        });
+        // This is the secret sauce: refresh the list as soon as the data is sent
+        loadLeaderboard(); 
+    } catch (e) {
+        console.error("Failed to sync score with command center.");
+    }
 }
 
 // Initial load of the leaderboard from the server

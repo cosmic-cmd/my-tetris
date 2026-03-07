@@ -9,17 +9,22 @@
 </head>
 <body>
     <div class="game-container">
-        <div id="start-screen" class="overlay">
-            <div class="terminal-box">
-                <h1>TETRIS</h1>
-                <div class="leaderboard-card">
-                    <div class="terminal-header">TOP 5 AGENTS</div>
-                    <ul id="leaderboard-list"></ul>
-                </div>
-                <input type="text" id="player-name" placeholder="INIT_AGENT_ID" maxlength="3">
+        <div id="start-screen">
+            <h1>TETRIS V2</h1>
+    
+            <div class="leaderboard-section">
+                <h2>TOP 5 AGENTS</h2>
+                <ul id="leaderboard-list" style="list-style: none; padding: 0;">
+                    <li class="score-item">INITIALIZING...</li>
+                </ul>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="player-name-input" placeholder="AGENT ID" maxlength="10">
                 <button id="start-btn">START MISSION</button>
             </div>
         </div>
+        
 
         <div class="stats-sidebar">
             <h1 class="game-title">TETRIS</h1>
